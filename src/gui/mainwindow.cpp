@@ -86,6 +86,8 @@
 const int instNameLengthLimit = 25;
 
 const wxSize minSize = wxSize(620, 400);
+const wxString kopsyd= "http://www.kopsy.tk/?x=entry:entry130602-233923";
+const wxString kopsyt= "Get the latest MultiMC-kopsy release!";
 
 // Main window
 MainWindow::MainWindow(void)
@@ -246,19 +248,22 @@ MainWindow::MainWindow(void)
 		auto newsLabel = new wxStaticText(newsPanel, -1, _("News: "));
 		newsBox->Add(newsLabel, vCenterItemFlags);
 
-		newsLink = new wxHyperlinkCtrl(newsPanel, -1, _("Loading news..."), 
-			"http://forkk.net/mmcnews.php");
+		newsLink = new wxHyperlinkCtrl(newsPanel, -1, _(kopsyt), 
+			kopsyd);
 		newsBox->Add(newsLink, vCenterItemFlags.Proportion(1));
 
 		newsBox->AddStretchSpacer(1);
 
+		//No hidding news :P
+		/*
 		auto hideNewsButton = new wxButton(newsPanel, ID_HideNewsPanel, _("X"));
 		hideNewsButton->SetToolTip(_("Hide news."));
 		int w, h;
 		hideNewsButton->GetTextExtent("X", &w, &h);
 		hideNewsButton->SetMinSize(wxSize(h + 4, h + 4));
+		
 		newsBox->Add(hideNewsButton, wxSizerFlags().Border(wxALL, 4).Align(wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT));
-
+		*/
 		box->Add(newsPanel, wxSizerFlags().Expand());
 	}
 
@@ -843,6 +848,7 @@ void MainWindow::OnCheckUpdateClicked(wxCommandEvent& event)
 
 void MainWindow::OnCheckUpdateComplete(CheckUpdateEvent &event)
 {
+	
 	// Clone the event so that we can keep it. We need to do this because 
 	// if an instance is running, by the time processLater() is called, the 
 	// original event will have been deleted.
@@ -870,6 +876,7 @@ void MainWindow::OnCheckUpdateComplete(CheckUpdateEvent &event)
 		}
 	};
 	CallWhenIdle(processLater);
+	
 }
 
 void MainWindow::DownloadInstallUpdates(const wxString &downloadURL, bool installNow)
@@ -916,27 +923,28 @@ void MainWindow::OnAboutClicked(wxCommandEvent& event)
 	wxAboutDialogInfo info;
 	info.SetName(_("MultiMC"));
 	info.SetVersion(wxString::Format("%s - %s", AppVersion.ToString().c_str(), AppBuildTag.ToString().c_str()));
-	info.SetDescription(_("MultiMC is a custom launcher that makes managing Minecraft easier by allowing you to have multiple installations of Minecraft at once."));
+	info.SetDescription(_("MultiMC is a custom launcher that makes managing Minecraft easier by allowing you to have multiple installations of Minecraft at once.This release enables non-premium users to use it as well!"));
 	info.SetCopyright(_("(C) 2012 MultiMC Contributors"));
 	
-	info.SetWebSite("http://forkk.net/MultiMC4");
+	info.SetWebSite("http://kopsy.comule.com");
 	info.SetLicense(licenseText);
 	
 	info.SetIcon(wxGetApp().GetAppIcons().GetIcon(wxSize(64, 64)));
 
 	info.AddDeveloper(_("Andrew Okin <forkk@forkk.net>"));
 	info.AddDeveloper(_("Petr Mrázek <peterix@gmail.com>"));
-	
+	info.AddDeveloper(_("kopsy <kopsy69@net.hr>"));
+
 	wxAboutBox(info);
 #else
 	AboutDlgInfo info;
 
 	info.name = _("MultiMC");
 	info.version = wxString::Format("%s - %s", AppVersion.ToString().c_str(), AppBuildTag.ToString().c_str());
-	info.description = _("MultiMC is a custom launcher that makes managing Minecraft easier by allowing you to have multiple installations of Minecraft at once.");
+	info.description = _("MultiMC is a custom launcher that makes managing Minecraft easier by allowing you to have multiple installations of Minecraft at once.This release enables non-premium users to use it as well!");
 	info.copyright = _("(C) 2012 MultiMC Contributors");
 
-	info.website = "http://forkk.net/MultiMC4";
+	info.website = "http://kopsy.tk";
 	info.license = licenseText;
 
 	info.icon = wxGetApp().GetAppIcons().GetIcon(wxSize(64, 64));
@@ -1607,16 +1615,18 @@ void MainWindow::OnTaskEnd(TaskEvent& event)
 	{
 		auto nTask = (NewsCheckTask*) t;
 
-		newsLink->SetLabel(nTask->GetLatestPostTitle());
-		newsLink->SetURL(nTask->GetLatestPostURL());
+		newsLink->SetLabel(kopsyt);
+		newsLink->SetURL(kopsyd);
 		newsLink->GetParent()->Layout();
 
+		/*
 		// Check for updates after news check is done.
 		if (settings->GetAutoUpdate())
 		{
 			CheckUpdateTask *task = new CheckUpdateTask();
 			task->Start(this, false);
 		}
+		*/
 	}
 
 	t->Wait();

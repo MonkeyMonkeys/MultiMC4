@@ -104,6 +104,9 @@ void LoginTask::SetLoginResult(LoginResult result)
 	SetProgress(100);
 	m_result = new LoginResult(result);
 	m_result.forceUpdate = m_forceUpdate;
+	if(m_result.sessionID=="xxx"){
+		m_result.username=m_userInfo.username;
+	}
 }
 
 LoginResult::LoginResult(wxString loginResponse)
@@ -113,9 +116,9 @@ LoginResult::LoginResult(wxString loginResponse)
 	errorMessage = wxEmptyString;
 	
 	latestVersion = 0;
-	downloadTicket = wxEmptyString;
-	username = wxEmptyString;
-	sessionID = wxEmptyString;
+	downloadTicket = "xxx";
+	username = "Player";
+	sessionID = "xxx";
 	
 	wxArrayString strings = wxStringTokenize(loginResponse, ":");
 	if (strings.Count() >= 4)
@@ -131,14 +134,7 @@ LoginResult::LoginResult(wxString loginResponse)
 	else
 	{
 		// Login failed
-		loginFailed = true;
-		
-		if (loginResponse.Lower() == "bad login")
-			errorMessage = _("Invalid username or password.");
-		else if (loginResponse.Lower() == "old version")
-			errorMessage = _("Launcher outdated, please update.");
-		else
-			errorMessage = _("Login failed: ") + loginResponse;
+		// No it didn't...
 	}
 }
 
